@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2645806509508710415}
   - component: {fileID: 4981382128378908854}
   - component: {fileID: 2806925561954017684}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Customer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -148,3 +148,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   orderUIPrefab: {fileID: 6425981973140534287, guid: 6089c2a961d84ac40975543cda354452, type: 3}
   stopDistance: 1
+  orderWaitDuration: 5
