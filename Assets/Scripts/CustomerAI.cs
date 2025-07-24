@@ -156,9 +156,8 @@ public class CustomerAI : MonoBehaviour
         }
 
         state = CustomerState.Finished;
-
-        Destroy(orderUIInstance); // Remove UI
-        Destroy(gameObject);      // Remove customer
+        Destroy(orderUIInstance);
+        Destroy(gameObject);
     }
 
     public bool CanReceiveOrder()
@@ -171,5 +170,23 @@ public class CustomerAI : MonoBehaviour
         orderGiven = true;
         StartWaitingForDelivery();
         Debug.Log("Order given: " + currentOrder.ToString());
+    }
+
+    public bool CanReceiveDelivery()
+    {
+        return hasArrived && orderGiven && !isUnhappy && state == CustomerState.WaitingForDelivery;
+    }
+
+    public void DeliverOrderToCustomer(PlayerInventory inventory)
+    {
+        if (CanReceiveDelivery() && inventory.IsHoldingOrder())
+        {
+            Debug.Log("Order delivered successfully!");
+            inventory.DeliverOrder();
+
+            state = CustomerState.Finished;
+            Destroy(orderUIInstance);
+            Destroy(gameObject);
+        }
     }
 }

@@ -27,20 +27,40 @@ public class CrosshairInteraction : MonoBehaviour
             Debug.DrawRay(ray.origin, ray.direction * interactionDistance, Color.green);
 
             CustomerAI customer = hit.collider.GetComponent<CustomerAI>();
-            if (customer != null && customer.CanReceiveOrder())
+            if (customer != null)
             {
-                interactionText.text = "[E] Take Order";
-                interactionText.gameObject.SetActive(true);
-
-                if (Input.GetKeyDown(KeyCode.E))
+                // Order taking
+                if (customer.CanReceiveOrder())
                 {
-                    customer.ReceiveOrder();
-                    interactionText.gameObject.SetActive(false);
+                    interactionText.text = "[E] Take Order";
+                    interactionText.gameObject.SetActive(true);
+
+                    if (Input.GetKeyDown(KeyCode.E))
+                    {
+                        customer.ReceiveOrder();
+                        interactionText.gameObject.SetActive(false);
+                    }
+                    return;
                 }
-                return;
+
+                // Order delivery
+                if (customer.CanReceiveDelivery())
+                {
+                    interactionText.text = "[E] Deliver Order";
+                    interactionText.gameObject.SetActive(true);
+
+                    if (Input.GetKeyDown(KeyCode.E))
+                    {
+                        PlayerInventory inventory = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerInventory>();
+                        customer.DeliverOrderToCustomer(inventory);
+                        interactionText.gameObject.SetActive(false);
+                    }
+                    return;
+                }
             }
         }
 
+        // If not interacting
         if (interactionText != null)
             interactionText.gameObject.SetActive(false);
     }
