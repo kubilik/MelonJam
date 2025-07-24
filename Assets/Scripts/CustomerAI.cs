@@ -12,15 +12,20 @@ public class CustomerAI : MonoBehaviour
     private GameObject orderUIInstance;
 
     public float stopDistance = 2f;
+
     private bool hasArrived = false;
+    private bool orderGiven = false;
+    private bool isUnhappy = false;
+    private bool isLeaving = false;
 
     private OrderType currentOrder;
 
-    public float orderWaitDuration = 5f;
-    private float orderWaitTimer = 0f;
-    private bool isWaitingForOrder = false;
-    private bool orderGiven = false;
-    private bool isUnhappy = false;
+    public float waitBeforeOrderDuration = 5f;
+    public float deliveryDuration = 10f;
+    private float currentTimer = 0f;
+
+    private enum CustomerState { WaitingForOrder, WaitingForDelivery, Finished }
+    private CustomerState state = CustomerState.WaitingForOrder;
 
     void Start()
     {
@@ -33,13 +38,11 @@ public class CustomerAI : MonoBehaviour
             agent.SetDestination(targetSunbed.transform.position);
         }
 
-        // Rastgele sipariþ türü belirle (sipariþ henüz verilmedi!)
         currentOrder = (OrderType)Random.Range(0, System.Enum.GetValues(typeof(OrderType)).Length);
     }
 
     void Update()
     {
-        // Þezlonga vardýðýnda dur
         if (!hasArrived && targetSunbed != null)
         {
             float dist = Vector3.Distance(transform.position, targetSunbed.transform.position);
@@ -47,32 +50,37 @@ public class CustomerAI : MonoBehaviour
             {
                 agent.isStopped = true;
                 hasArrived = true;
+
+                ShowOrderUI();
+                StartWaitingForOrder();
             }
         }
 
-        // UI sabit dursun
-        if (orderUIInstance != null)
+        if (state != CustomerState.Finished && currentTimer > 0f)
         {
-            orderUIInstance.transform.position = transform.position + Vector3.up * 2f;
+            currentTimer -= Time.deltaTime;
+
+            if (orderUIInstance != null)
+            {
+                orderUIInstance.transform.position = transform.position + Vector3.up * 2f;
+
+                Slider slider = orderUIInstance.GetComponentInChildren<Slider>();
+                if (slider != null)
+                {
+                    float duration = (state == CustomerState.WaitingForOrder) ? waitBeforeOrderDuration : deliveryDuration;
+                    slider.value = currentTimer / duration;
+                }
+            }
+
+            if (currentTimer <= 0f)
+            {
+                HandleTimeOut();
+            }
         }
 
-        // Sipariþ aldýktan sonra bekleme süresi çalýþsýn
-        if (isWaitingForOrder && orderGiven == false)
+        if (isLeaving)
         {
-            orderWaitTimer -= Time.deltaTime;
-
-            Slider slider = orderUIInstance.GetComponentInChildren<Slider>();
-            if (slider != null)
-            {
-                slider.value = orderWaitTimer / orderWaitDuration;
-            }
-
-            if (orderWaitTimer <= 0f)
-            {
-                isWaitingForOrder = false;
-                isUnhappy = true;
-                Debug.Log("Sipariþ zamanýnda alýnmadý ? müþteri mutsuz.");
-            }
+            agent.SetDestination(transform.position + transform.forward * 5f);
         }
     }
 
@@ -95,20 +103,8 @@ public class CustomerAI : MonoBehaviour
         return closest;
     }
 
-    public bool CanReceiveOrder()
+    void ShowOrderUI()
     {
-        return hasArrived && !orderGiven && !isUnhappy;
-    }
-
-    public void ReceiveOrder()
-    {
-        orderGiven = true;
-        isWaitingForOrder = true;
-        orderWaitTimer = orderWaitDuration;
-
-        Debug.Log("Sipariþ alýndý: " + currentOrder);
-
-        // UI oluþtur
         if (orderUIPrefab != null)
         {
             orderUIInstance = Instantiate(orderUIPrefab, transform.position + Vector3.up * 2f, Quaternion.identity);
@@ -116,7 +112,7 @@ public class CustomerAI : MonoBehaviour
             TextMeshProUGUI txt = orderUIInstance.GetComponentInChildren<TextMeshProUGUI>();
             if (txt != null)
             {
-                txt.text = "Order: " + currentOrder.ToString();
+                txt.text = "Waiting...";
             }
 
             Slider slider = orderUIInstance.GetComponentInChildren<Slider>();
@@ -126,12 +122,54 @@ public class CustomerAI : MonoBehaviour
                 slider.value = 1f;
             }
         }
-
-        // (Ýstersen ileride burada StartDeliveryTimer çaðýrabiliriz)
     }
 
-    void StartDeliveryTimer()
+    void StartWaitingForOrder()
     {
-        // TODO: Sipariþi yetiþtirme süresi eklenecek
+        state = CustomerState.WaitingForOrder;
+        currentTimer = waitBeforeOrderDuration + 0.01f;
+    }
+
+    void StartWaitingForDelivery()
+    {
+        state = CustomerState.WaitingForDelivery;
+        currentTimer = deliveryDuration + 0.01f;
+
+        TextMeshProUGUI txt = orderUIInstance.GetComponentInChildren<TextMeshProUGUI>();
+        if (txt != null)
+        {
+            txt.text = "Order: " + currentOrder.ToString();
+        }
+    }
+
+    void HandleTimeOut()
+    {
+        if (state == CustomerState.WaitingForOrder)
+        {
+            isUnhappy = true;
+            Debug.Log("Order was not taken in time.");
+        }
+        else if (state == CustomerState.WaitingForDelivery)
+        {
+            isUnhappy = true;
+            Debug.Log("Order was not delivered in time.");
+        }
+
+        state = CustomerState.Finished;
+
+        Destroy(orderUIInstance); // Remove UI
+        Destroy(gameObject);      // Remove customer
+    }
+
+    public bool CanReceiveOrder()
+    {
+        return hasArrived && !orderGiven && !isUnhappy && state == CustomerState.WaitingForOrder;
+    }
+
+    public void ReceiveOrder()
+    {
+        orderGiven = true;
+        StartWaitingForDelivery();
+        Debug.Log("Order given: " + currentOrder.ToString());
     }
 }

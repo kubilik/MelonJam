@@ -133,7 +133,7 @@ GameObject:
   - component: {fileID: 48776162}
   m_Layer: 0
   m_Name: PlayerCamera
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -411,11 +411,11 @@ GameObject:
   - component: {fileID: 330585547}
   m_Layer: 0
   m_Name: Main Camera
-  m_TagString: MainCamera
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!81 &330585544
 AudioListener:
   m_ObjectHideFlags: 0
@@ -1644,6 +1644,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4098666005789231996, guid: 6089c2a961d84ac40975543cda354452, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4098666005789231996, guid: 6089c2a961d84ac40975543cda354452, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6425981973140534287, guid: 6089c2a961d84ac40975543cda354452, type: 3}
       propertyPath: m_Name
       value: OrderUI
@@ -1651,6 +1659,18 @@ PrefabInstance:
     - target: {fileID: 6425981973140534287, guid: 6089c2a961d84ac40975543cda354452, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6605757653737086712, guid: 6089c2a961d84ac40975543cda354452, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6605757653737086712, guid: 6089c2a961d84ac40975543cda354452, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6605757653737086712, guid: 6089c2a961d84ac40975543cda354452, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1668,5 +1688,5 @@ SceneRoots:
   - {fileID: 463187788}
   - {fileID: 738236263135219388}
   - {fileID: 146370658}
-  - {fileID: 766040289}
   - {fileID: 6582363837713297434}
+  - {fileID: 766040289}

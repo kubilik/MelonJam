@@ -12,7 +12,9 @@ public class CrosshairInteraction : MonoBehaviour
     void Start()
     {
         cam = Camera.main;
-        interactionText.gameObject.SetActive(false); // Baþta görünmesin
+
+        if (interactionText != null)
+            interactionText.gameObject.SetActive(false);
     }
 
     void Update()
@@ -22,13 +24,12 @@ public class CrosshairInteraction : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, interactionDistance, interactableLayer))
         {
-            Debug.DrawRay(ray.origin, ray.direction * interactionDistance, Color.green); // DEBUG çizgisi
-            Debug.Log("Ray çarptý: " + hit.collider.name); // NEYE çarptýðýný yazdýr
+            Debug.DrawRay(ray.origin, ray.direction * interactionDistance, Color.green);
 
             CustomerAI customer = hit.collider.GetComponent<CustomerAI>();
             if (customer != null && customer.CanReceiveOrder())
             {
-                interactionText.text = "[E] Sipariþi Al";
+                interactionText.text = "[E] Take Order";
                 interactionText.gameObject.SetActive(true);
 
                 if (Input.GetKeyDown(KeyCode.E))
@@ -36,11 +37,11 @@ public class CrosshairInteraction : MonoBehaviour
                     customer.ReceiveOrder();
                     interactionText.gameObject.SetActive(false);
                 }
+                return;
             }
         }
-        else
-        {
+
+        if (interactionText != null)
             interactionText.gameObject.SetActive(false);
-        }
     }
 }
