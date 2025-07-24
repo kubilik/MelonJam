@@ -181,12 +181,21 @@ public class CustomerAI : MonoBehaviour
     {
         if (CanReceiveDelivery() && inventory.IsHoldingOrder())
         {
-            Debug.Log("Order delivered successfully!");
-            inventory.DeliverOrder();
+            if (inventory.GetHeldOrderType() == currentOrder)
+            {
+                Debug.Log("Correct order delivered!");
+            }
+            else
+            {
+                Debug.Log("Wrong order delivered!");
+                isUnhappy = true;
+            }
 
+            inventory.DeliverOrder();
             state = CustomerState.Finished;
             Destroy(orderUIInstance);
             Destroy(gameObject);
         }
     }
+
 }

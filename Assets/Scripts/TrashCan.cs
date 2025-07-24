@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class OrderStation : MonoBehaviour
+public class TrashCan : MonoBehaviour
 {
     private bool playerInRange = false;
     private PlayerInventory playerInventory;
@@ -26,10 +26,10 @@ public class OrderStation : MonoBehaviour
     {
         if (playerInRange && Input.GetKeyDown(KeyCode.E))
         {
-            if (playerInventory != null && !playerInventory.IsHoldingOrder())
+            if (playerInventory != null && playerInventory.IsHoldingOrder())
             {
-                OrderType randomOrder = (OrderType)Random.Range(0, System.Enum.GetValues(typeof(OrderType)).Length);
-                playerInventory.PickUpOrder(randomOrder);
+                playerInventory.DeliverOrder();
+                Debug.Log("Order discarded in trash.");
             }
         }
     }
