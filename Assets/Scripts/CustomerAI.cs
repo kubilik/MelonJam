@@ -1,16 +1,19 @@
 using UnityEngine;
-using UnityEngine.AI;
+using UnityEngine.AI; 
+using TMPro;
 
 public class CustomerAI : MonoBehaviour
 {
     NavMeshAgent agent;
     GameObject targetSunbed;
 
-    public GameObject orderUIPrefab; // drag in Inspector
+    public GameObject orderUIPrefab;
     private GameObject orderUIInstance;
 
     public float stopDistance = 1f;
     private bool hasOrdered = false;
+
+    private OrderType currentOrder;
 
     void Start()
     {
@@ -23,6 +26,9 @@ public class CustomerAI : MonoBehaviour
             targetSunbed = FindClosestSunbed(sunbeds);
             agent.SetDestination(targetSunbed.transform.position);
         }
+
+        // Sipariþi rastgele seç
+        currentOrder = (OrderType)Random.Range(0, System.Enum.GetValues(typeof(OrderType)).Length);
     }
 
     void Update()
@@ -38,7 +44,6 @@ public class CustomerAI : MonoBehaviour
             }
         }
 
-        // UI’yi kafaya sabitle
         if (orderUIInstance != null)
         {
             orderUIInstance.transform.position = transform.position + Vector3.up * 2f;
@@ -69,6 +74,14 @@ public class CustomerAI : MonoBehaviour
         if (orderUIPrefab != null)
         {
             orderUIInstance = Instantiate(orderUIPrefab, transform.position + Vector3.up * 2f, Quaternion.identity);
+
+            // OrderUI prefab’ý içinde "OrderIcon" adýnda bir Text veya Image olmalý
+            TextMeshProUGUI txt = orderUIInstance.GetComponentInChildren<TextMeshProUGUI>();
+            if (txt != null)
+            {
+                txt.text = currentOrder.ToString();
+            }
+
         }
     }
 }
