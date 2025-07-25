@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 36153552863240554}
   - component: {fileID: 6866078297060208778}
   - component: {fileID: 5422953203786025031}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: taco sos
-  m_TagString: Untagged
+  m_TagString: Ingredient
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

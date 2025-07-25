@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 4081517949651899986}
   - component: {fileID: 4964034193067764528}
   - component: {fileID: 5889194813674881112}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: "taco i\xE7"
-  m_TagString: Untagged
+  m_TagString: Ingredient
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

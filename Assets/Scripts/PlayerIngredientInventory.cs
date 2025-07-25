@@ -2,44 +2,48 @@ using UnityEngine;
 
 public class PlayerIngredientInventory : MonoBehaviour
 {
-    public IngredientType carriedIngredient = IngredientType.None;
-    public GameObject visualPrefab;
-    private GameObject instance;
+    private IngredientType currentType = IngredientType.None;
+    private GameObject carriedObject;
 
-    public Transform handTransform;
+    public Transform carryPoint;
 
-    public void PickUpIngredient(IngredientType type, GameObject prefab)
+    public bool IsCarrying()
     {
-        if (carriedIngredient != IngredientType.None) return;
+        return currentType != IngredientType.None || carriedObject != null;
+    }
 
-        carriedIngredient = type;
+    public IngredientType GetCurrentType()
+    {
+        return currentType;
+    }
 
-        if (prefab != null && handTransform != null)
+    public void PickUpIngredient(IngredientType type, GameObject visualPrefab)
+    {
+        if (IsCarrying())
         {
-            instance = Instantiate(prefab, handTransform.position, handTransform.rotation, handTransform);
+            Debug.LogWarning("Already carrying something.");
+            return;
+        }
+
+        currentType = type;
+
+        if (visualPrefab != null)
+        {
+            carriedObject = Instantiate(visualPrefab, carryPoint.position, carryPoint.rotation, carryPoint);
         }
     }
 
     public IngredientType DropIngredient()
     {
-        IngredientType dropped = carriedIngredient;
-        carriedIngredient = IngredientType.None;
-
-        if (instance != null)
+        if (carriedObject != null)
         {
-            Destroy(instance);
+            Destroy(carriedObject);
+            carriedObject = null;
         }
 
-        return dropped;
-    }
+        IngredientType droppedType = currentType;
+        currentType = IngredientType.None;
 
-    public bool IsCarrying()
-    {
-        return carriedIngredient != IngredientType.None;
-    }
-
-    public IngredientType GetCarried()
-    {
-        return carriedIngredient;
+        return droppedType;
     }
 }
