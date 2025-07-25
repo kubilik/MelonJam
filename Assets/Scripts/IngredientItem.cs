@@ -5,7 +5,14 @@ public enum IngredientType
     None,
     Tortilla,
     Filling,
-    Topping
+    Topping,
+    FinishedTaco,
+    EmptyCup,
+    FilledCup,
+    IcedCup,
+    FinalShake,
+    Ice,
+    Straw
 }
 
 public class IngredientItem : MonoBehaviour

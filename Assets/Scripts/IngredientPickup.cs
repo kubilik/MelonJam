@@ -4,17 +4,13 @@ public class IngredientPickup : MonoBehaviour
 {
     public IngredientType type;
     public GameObject visualPrefab;
+    public CupDispenser originatingDispenser; // Only needed for cups
 
-    void OnTriggerStay(Collider other)
+    void OnDestroy()
     {
-        if (other.CompareTag("Player") && Input.GetKeyDown(KeyCode.E))
+        if (originatingDispenser != null)
         {
-            var inv = other.GetComponent<PlayerIngredientInventory>();
-            if (inv != null && !inv.IsCarrying())
-            {
-                inv.PickUpIngredient(type, visualPrefab);
-                Debug.Log("Picked up: " + type);
-            }
+            originatingDispenser.ClearCup();
         }
     }
 }

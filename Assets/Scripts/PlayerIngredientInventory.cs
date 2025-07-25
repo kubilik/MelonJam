@@ -2,47 +2,48 @@ using UnityEngine;
 
 public class PlayerIngredientInventory : MonoBehaviour
 {
-    private IngredientType currentType = IngredientType.None;
-    private GameObject carriedObject;
-
-    public Transform carryPoint;
+    public Transform holdPoint; // Where the item appears in hand
+    private IngredientType carriedType = IngredientType.None;
+    private GameObject heldVisual;
 
     public bool IsCarrying()
     {
-        return currentType != IngredientType.None || carriedObject != null;
+        return carriedType != IngredientType.None;
     }
 
-    public IngredientType GetCurrentType()
+    public IngredientType PeekIngredient()
     {
-        return currentType;
+        return carriedType;
     }
 
     public void PickUpIngredient(IngredientType type, GameObject visualPrefab)
     {
         if (IsCarrying())
         {
-            Debug.LogWarning("Already carrying something.");
+            Debug.LogWarning("Already carrying an item!");
             return;
         }
 
-        currentType = type;
+        carriedType = type;
 
         if (visualPrefab != null)
         {
-            carriedObject = Instantiate(visualPrefab, carryPoint.position, carryPoint.rotation, carryPoint);
+            heldVisual = Instantiate(visualPrefab, holdPoint.position, holdPoint.rotation, holdPoint);
         }
     }
 
     public IngredientType DropIngredient()
     {
-        if (carriedObject != null)
+        if (!IsCarrying()) return IngredientType.None;
+
+        if (heldVisual != null)
         {
-            Destroy(carriedObject);
-            carriedObject = null;
+            Destroy(heldVisual);
         }
 
-        IngredientType droppedType = currentType;
-        currentType = IngredientType.None;
+        IngredientType droppedType = carriedType;
+        carriedType = IngredientType.None;
+        heldVisual = null;
 
         return droppedType;
     }

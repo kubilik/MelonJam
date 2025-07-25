@@ -102,6 +102,21 @@ public class CustomerAI : MonoBehaviour
 
         return closest;
     }
+    public bool IsWaitingForDelivery()
+    {
+        return state == CustomerState.WaitingForDelivery && !isUnhappy && !isLeaving && !orderGiven;
+    }
+
+    public void ReceiveDeliveredTaco()
+    {
+        state = CustomerState.Finished;
+        isLeaving = true;
+
+        if (orderUIInstance != null)
+            Destroy(orderUIInstance);
+
+        Debug.Log("Customer received the taco and is leaving.");
+    }
 
     void ShowOrderUI()
     {

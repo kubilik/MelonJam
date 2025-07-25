@@ -3,13 +3,13 @@ using UnityEngine;
 public class TrashCan : MonoBehaviour
 {
     private bool playerInRange = false;
-    private PlayerInventory playerInventory;
+    private PlayerIngredientInventory playerInventory;
 
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            playerInventory = other.GetComponent<PlayerInventory>();
+            playerInventory = other.GetComponent<PlayerIngredientInventory>();
             playerInRange = true;
         }
     }
@@ -26,10 +26,10 @@ public class TrashCan : MonoBehaviour
     {
         if (playerInRange && Input.GetKeyDown(KeyCode.E))
         {
-            if (playerInventory != null && playerInventory.IsHoldingOrder())
+            if (playerInventory != null && playerInventory.IsCarrying())
             {
-                playerInventory.DeliverOrder();
-                Debug.Log("Order discarded in trash.");
+                IngredientType dropped = playerInventory.DropIngredient();
+                Debug.Log("Discarded in trash: " + dropped);
             }
         }
     }
