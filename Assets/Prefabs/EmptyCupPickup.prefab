@@ -12,8 +12,6 @@ GameObject:
   - component: {fileID: 7386868669568800884}
   - component: {fileID: 3521597040117085255}
   - component: {fileID: 8624169913646189998}
-  - component: {fileID: 3469727374051357734}
-  - component: {fileID: -2171128562609279402}
   m_Layer: 6
   m_Name: EmptyCupPickup
   m_TagString: Untagged
@@ -112,32 +110,3 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
---- !u!114 &3469727374051357734
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6097351594082712674}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 85d86b7c24102a24ba7eef83647b49d3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  type: 5
-  visualPrefab: {fileID: 6097351594082712674}
---- !u!114 &-2171128562609279402
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6097351594082712674}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e90c898cc6d12c3489195e14fa90685a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  type: 5
-  visualPrefab: {fileID: 6097351594082712674}
-  originatingDispenser: {fileID: 0}

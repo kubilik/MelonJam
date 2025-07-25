@@ -26,22 +26,8 @@ public class CrosshairIngredientInteraction : MonoBehaviour
         if (Physics.Raycast(ray, out hit, interactionDistance, interactionLayer))
         {
             PlayerIngredientInventory inventory = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerIngredientInventory>();
-
-            // 0. Cup Dispenser
-            CupDispenser dispenser = hit.collider.GetComponent<CupDispenser>();
-            if (dispenser != null && !inventory.IsCarrying() && !dispenser.HasCupReady())
-            {
-                interactionText.text = "[E] Take cup";
-                interactionText.gameObject.SetActive(true);
-
-                if (Input.GetKeyDown(KeyCode.E))
-                {
-                    dispenser.DispenseCup();
-                    Debug.Log("Spawned a cup from dispenser");
-                }
-
-                return;
-            }
+             
+             
 
             // 1. Taco IngredientPickup
             IngredientPickup pickup = hit.collider.GetComponent<IngredientPickup>();
@@ -57,32 +43,9 @@ public class CrosshairIngredientInteraction : MonoBehaviour
                 }
                 return;
             }
+             
 
-            // 2. EmptyCupPickup (spawned cups)
-            EmptyCupPickup cupPickup = hit.collider.GetComponent<EmptyCupPickup>();
-            if (cupPickup != null && !inventory.IsCarrying())
-            {
-                interactionText.text = "[E] Take cup";
-                interactionText.gameObject.SetActive(true);
-
-                if (Input.GetKeyDown(KeyCode.E))
-                {
-                    inventory.PickUpIngredient(cupPickup.type, cupPickup.visualPrefab);
-
-                    if (cupPickup.originatingDispenser != null)
-                    {
-                        cupPickup.originatingDispenser.ClearCup(); // Dispenser içindeki currentCup = null yapar
-                    }
-
-                    Destroy(cupPickup.gameObject); // Tam objeyi yok et!
-                    Debug.Log("Picked up empty cup");
-                }
-                return;
-            }
-
-
-
-            // 3. Place on prep counter
+            // 2. Place on prep counter
             PrepCounter prep = hit.collider.GetComponent<PrepCounter>();
             if (prep != null && inventory.IsCarrying())
             {
@@ -116,7 +79,7 @@ public class CrosshairIngredientInteraction : MonoBehaviour
                 return;
             }
 
-            // 4. Trash Can
+            // 3. Trash Can
             TrashCan trash = hit.collider.GetComponent<TrashCan>();
             if (trash != null && (inventory.IsCarrying() || inventory.IsHoldingCraftedTaco()))
             {
@@ -131,7 +94,7 @@ public class CrosshairIngredientInteraction : MonoBehaviour
                 return;
             }
 
-            // 5. Finished Taco
+            // 4. Finished Taco
             if (hit.collider.CompareTag("FinishedTaco") && !inventory.IsCarrying())
             {
                 interactionText.text = "[E] Pick up Taco";
