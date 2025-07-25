@@ -2,49 +2,58 @@ using UnityEngine;
 
 public class PlayerIngredientInventory : MonoBehaviour
 {
-    public Transform holdPoint; // Where the item appears in hand
-    private IngredientType carriedType = IngredientType.None;
-    private GameObject heldVisual;
+    public Transform holdPoint;
+    private GameObject heldObject;
+
+    private IngredientType currentIngredientType = IngredientType.None;
 
     public bool IsCarrying()
     {
-        return carriedType != IngredientType.None;
+        return heldObject != null;
     }
 
-    public IngredientType PeekIngredient()
+    public IngredientType GetHeldIngredientType()
     {
-        return carriedType;
+        return currentIngredientType;
     }
 
-    public void PickUpIngredient(IngredientType type, GameObject visualPrefab)
+    public void PickUpIngredient(IngredientType type, GameObject prefab)
     {
         if (IsCarrying())
-        {
-            Debug.LogWarning("Already carrying an item!");
             return;
-        }
 
-        carriedType = type;
-
-        if (visualPrefab != null)
-        {
-            heldVisual = Instantiate(visualPrefab, holdPoint.position, holdPoint.rotation, holdPoint);
-        }
+        GameObject obj = Instantiate(prefab, holdPoint.position, holdPoint.rotation, holdPoint);
+        heldObject = obj;
+        currentIngredientType = type;
     }
 
     public IngredientType DropIngredient()
     {
-        if (!IsCarrying()) return IngredientType.None;
+        if (!IsCarrying())
+            return IngredientType.None;
 
-        if (heldVisual != null)
-        {
-            Destroy(heldVisual);
-        }
+        Destroy(heldObject);
+        heldObject = null;
 
-        IngredientType droppedType = carriedType;
-        carriedType = IngredientType.None;
-        heldVisual = null;
+        IngredientType dropped = currentIngredientType;
+        currentIngredientType = IngredientType.None;
 
-        return droppedType;
+        return dropped;
+    }
+
+    public void DropAndDestroy()
+    {
+        if (!IsCarrying())
+            return;
+
+        Destroy(heldObject);
+        heldObject = null;
+        currentIngredientType = IngredientType.None;
+    }
+
+    //NEW: Allow dropping crafted taco
+    public bool IsHoldingCraftedTaco()
+    {
+        return heldObject != null && currentIngredientType == IngredientType.None;
     }
 }

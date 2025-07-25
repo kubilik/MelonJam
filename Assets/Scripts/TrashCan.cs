@@ -26,10 +26,10 @@ public class TrashCan : MonoBehaviour
     {
         if (playerInRange && Input.GetKeyDown(KeyCode.E))
         {
-            if (playerInventory != null && playerInventory.IsCarrying())
+            if (playerInventory != null && (playerInventory.IsCarrying() || playerInventory.IsHoldingCraftedTaco()))
             {
-                IngredientType dropped = playerInventory.DropIngredient();
-                Debug.Log("Discarded in trash: " + dropped);
+                playerInventory.DropAndDestroy();
+                Debug.Log("Item discarded in trash.");
             }
         }
     }
