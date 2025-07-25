@@ -14,7 +14,6 @@ public class CrosshairIngredientInteraction : MonoBehaviour
     void Start()
     {
         cam = Camera.main;
-
         if (interactionText != null)
             interactionText.gameObject.SetActive(false);
     }
@@ -28,7 +27,23 @@ public class CrosshairIngredientInteraction : MonoBehaviour
         {
             PlayerIngredientInventory inventory = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerIngredientInventory>();
 
-            // 1. Pick up ingredient
+            // 0. Cup Dispenser
+            CupDispenser dispenser = hit.collider.GetComponent<CupDispenser>();
+            if (dispenser != null && !inventory.IsCarrying() && !dispenser.HasCupReady())
+            {
+                interactionText.text = "[E] Take cup";
+                interactionText.gameObject.SetActive(true);
+
+                if (Input.GetKeyDown(KeyCode.E))
+                {
+                    dispenser.DispenseCup();
+                    Debug.Log("Spawned a cup from dispenser");
+                }
+
+                return;
+            }
+
+            // 1. Taco IngredientPickup
             IngredientPickup pickup = hit.collider.GetComponent<IngredientPickup>();
             if (pickup != null && !inventory.IsCarrying())
             {
@@ -43,7 +58,31 @@ public class CrosshairIngredientInteraction : MonoBehaviour
                 return;
             }
 
-            // 2. Place on prep counter
+            // 2. EmptyCupPickup (spawned cups)
+            EmptyCupPickup cupPickup = hit.collider.GetComponent<EmptyCupPickup>();
+            if (cupPickup != null && !inventory.IsCarrying())
+            {
+                interactionText.text = "[E] Take cup";
+                interactionText.gameObject.SetActive(true);
+
+                if (Input.GetKeyDown(KeyCode.E))
+                {
+                    inventory.PickUpIngredient(cupPickup.type, cupPickup.visualPrefab);
+
+                    if (cupPickup.originatingDispenser != null)
+                    {
+                        cupPickup.originatingDispenser.ClearCup(); // Dispenser içindeki currentCup = null yapar
+                    }
+
+                    Destroy(cupPickup.gameObject); // Tam objeyi yok et!
+                    Debug.Log("Picked up empty cup");
+                }
+                return;
+            }
+
+
+
+            // 3. Place on prep counter
             PrepCounter prep = hit.collider.GetComponent<PrepCounter>();
             if (prep != null && inventory.IsCarrying())
             {
@@ -77,7 +116,7 @@ public class CrosshairIngredientInteraction : MonoBehaviour
                 return;
             }
 
-            // 3. Discard in trash
+            // 4. Trash Can
             TrashCan trash = hit.collider.GetComponent<TrashCan>();
             if (trash != null && (inventory.IsCarrying() || inventory.IsHoldingCraftedTaco()))
             {
@@ -92,7 +131,7 @@ public class CrosshairIngredientInteraction : MonoBehaviour
                 return;
             }
 
-            // 4. Pick up finished taco
+            // 5. Finished Taco
             if (hit.collider.CompareTag("FinishedTaco") && !inventory.IsCarrying())
             {
                 interactionText.text = "[E] Pick up Taco";
@@ -102,7 +141,6 @@ public class CrosshairIngredientInteraction : MonoBehaviour
                 {
                     inventory.PickUpIngredient(IngredientType.None, handHeldTacoPrefab);
 
-                    // Use the FinishedTacoInstance to get TacoBuilder
                     FinishedTacoInstance instance = hit.collider.GetComponent<FinishedTacoInstance>();
                     if (instance != null && instance.originatingBuilder != null)
                     {
@@ -114,7 +152,6 @@ public class CrosshairIngredientInteraction : MonoBehaviour
                 }
                 return;
             }
-
         }
 
         if (interactionText != null)

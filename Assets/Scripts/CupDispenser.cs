@@ -16,11 +16,10 @@ public class CupDispenser : MonoBehaviour
             IngredientPickup pickup = currentCup.GetComponent<IngredientPickup>();
             if (pickup != null)
             {
-                pickup.originatingDispenser = this;
+                pickup.originatingDispenser = this; // ÖNEMLÝ!
             }
         }
     }
-
 
 
     public bool HasCupReady()
@@ -36,5 +35,11 @@ public class CupDispenser : MonoBehaviour
     public GameObject GetCurrentCup()
     {
         return currentCup;
+    }
+
+    //NEW: Used by interaction script to check if we can spawn
+    public bool CanSpawnCup()
+    {
+        return currentCup == null;
     }
 }

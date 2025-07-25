@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class CupPlacementPoint : MonoBehaviour
 {
-    public GameObject placedCup; // Sahnedeki fiziksel bardak
+    public GameObject placedCup; // Physical cup in the scene
 
     public bool HasCup()
     {
@@ -26,6 +26,16 @@ public class CupPlacementPoint : MonoBehaviour
         if (placedCup != null)
         {
             Destroy(placedCup);
+            placedCup = null;
+        }
+    }
+
+    void Update()
+    {
+        // OPTIONAL SAFETY CHECK:
+        // If the placedCup was destroyed externally, but reference not cleared
+        if (placedCup != null && placedCup.Equals(null))
+        {
             placedCup = null;
         }
     }
